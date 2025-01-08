@@ -18,19 +18,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Specifications
 
-## Learn More
+This project uses Node Package Manager for package installations, and is built on the React framework. 
 
-To learn more about Next.js, take a look at the following resources:
+The package.json file contains all dependencies needed to install. TailwindCSS is used to style the HTML React components that are rendered to the webpage.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+It is hosted and deployed through Vercel.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contents
 
-## Deploy on Vercel
+This project is one that uses the provided API endpoint to gather data. It then has various filtering and sorting methods to view specific data entries.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Filtering:
+    Date Range - A modal is provided to gather entries that fall in a specific time period, by year.
+    Revenue & Net Income - A modal is provided to gather entries that fall in a specific range
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Sorting:
+    7 different outcomes are formulated: regarding date, revenue, and net income, all of which can be sorted in ascending or descending order, as well as the initial display of entries, which is the order in which it was gathered
+
+## Deployed Link Below
