@@ -15,7 +15,7 @@ export function Table({ incomeStatements }) {
           <tbody>
             {incomeStatements.map((incomeStatement, index) => (
               <tr key={index}>
-                <td className="text-center px-3 py-2 border border-black">{incomeStatement[0]}</td>
+                <td className="text-center px-3 py-2 border border-black">{(incomeStatement[0].toString()).substring(0,15)}</td>
                 <td className="text-center px-3 py-2 border border-black">{incomeStatement[1]}</td>
                 <td className="text-center px-3 py-2 border border-black">{incomeStatement[2]}</td>
                 <td className="text-center px-3 py-2 border border-black">{incomeStatement[3]}</td>
