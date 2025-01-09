@@ -13,6 +13,7 @@ export default function Home() {
   const [sortOrder, setSortOrder] = useState(true); // true -> ascending, false -> descending
   const [lowBound, setLowBound] = useState(0);
   const [highBound, setHighBound] = useState(0);
+  const [sortType, setSortType] = useState(0); // 0 -> date, 1 -> revenue, 2 -> netIncome
 
   const getData = async () => {
     try {
@@ -22,13 +23,14 @@ export default function Home() {
 
       // Create a new array with simplified data
       const newStatements = data.map((incomeStatement) => [
-        incomeStatement.date,
+        new Date(incomeStatement.date),
         incomeStatement.revenue,
         incomeStatement.netIncome,
         incomeStatement.grossProfit,
         incomeStatement.eps,
         incomeStatement.operatingIncome,
       ]);
+      
 
       setIncomeStatements(newStatements); // Update the state with the new array
       setFilteredStatements(newStatements); // Update the state with the new array
@@ -48,28 +50,36 @@ export default function Home() {
     setFilteredStatements(newStatement);
   };
 
-  // type -> revenue, netIncome, grossProfit, eps, operatingIncome
-  // order -> ascending, descending
+  // type -> date (0), revenue (1), netIncome (2)
+  // order -> ascending (true), descending (false)
   const sortData = (data, type, order) => {
-    let newStatement;
-    if (order === 0) {
-      newStatement = data.sort((a, b) => a[type] - b[type]);
-      setFilteredStatements(newStatement);
-    } else if (order === 1) {
-      newStatement = data.sort((a, b) => b[type] - a[type]);
-      setFilteredStatements(newStatement);
+    let newStatement = [...data];
+    if (order === true) {
+      console.log('Ascending');
+      newStatement.sort((a, b) => a[type] - b[type]); 
+      console.log(newStatement);
+    } else if (order === false) {
+      console.log('Descending');
+      newStatement.sort((a, b) => b[type] - a[type]); 
+      console.log(newStatement);
     } else {
       throw new Error('Invalid order value');
     }
+  
+    setFilteredStatements([...newStatement]);  
   };
+  
 
   const resetData = () => {
-    setFilteredStatements(incomeStatements);
+    setFilteredStatements([...incomeStatements]);  
   };
 
   return (
-    <div className="ml-10 mt-5 mr-10 w-9/10">
-      <div className="flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center">
+    <div className="ml-10 mt-5 mr-10 w-9/10 content-center">
+      <div className="mt-2">
+        <Table className="overflow-x-auto border-2 border-black w-full" incomeStatements={filteredStatements} />
+      </div>
+      <div className="mt-4 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center">
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={getData}>
           Get Data
         </Button>
@@ -80,8 +90,24 @@ export default function Home() {
                 Sort
               </Button>
               <Menu {...bindMenu(popupState)}>
-                <MenuItem onClick={popupState.close}>Ascending</MenuItem>
-                <MenuItem onClick={popupState.close}>Descending</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 0, true)
+                  }}>Date (Ascending)</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 0, false)
+                  }}>Date (Descending)</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 1, true)
+                  }}>Revenue (Ascending)</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 1, false)
+                  }}>Revenue (Descending)</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 2, true)
+                  }}>Net Income (Ascending)</MenuItem>
+                <MenuItem onClick={()=> {
+                  sortData(filteredStatements, 2, false)
+                  }}>Net Income (Descending)</MenuItem>
               </Menu>
             </React.Fragment>
           )}
@@ -106,12 +132,18 @@ export default function Home() {
           InputProps={{
             style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
           }}
+          onChange={(e) => {
+            setLowBound(e.target.value)
+          }}
         />
         <TextField
           placeholder="To"
           className="h-8 w-20 sm:w-32 m-1"
           InputProps={{
             style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
+          }}
+          onChange={(e) => {
+            setHighBound(e.target.value)
           }}
         />
         <Button variant="outlined" color="black" className="m-1 h-8">
@@ -120,9 +152,6 @@ export default function Home() {
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={resetData}>
           Reset Sort/Filter
         </Button>
-      </div>
-      <div className="mt-5">
-        <Table className="overflow-x-auto border-2 border-black w-full" incomeStatements={filteredStatements} />
       </div>
     </div>
   );
