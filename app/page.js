@@ -1,6 +1,9 @@
 'use client';
+import React from 'react';
 import { useState } from "react";
 import { Table } from "./Table.js"
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { Menu, MenuItem, Button } from "@mui/material";
 
 const api_key = process.env.NEXT_PUBLIC_API_KEY;
 const url = `https://financialmodelingprep.com/api/v3/income-statement/AAPL?period=annual&apikey=${api_key}`;
@@ -8,6 +11,7 @@ const url = `https://financialmodelingprep.com/api/v3/income-statement/AAPL?peri
 export default function Home() {
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [filteredStatements, setFilteredStatements] = useState([]);
+  const [sortOrder, setSortOrder] = useState(0);
 
   const getData = async () => {
     try {
@@ -43,15 +47,36 @@ export default function Home() {
   // type -> revenue, netIncome, grossProfit, eps, operatingIncome
   // order -> ascending, descending
   const sortData = (data, type, order) => {
-    
+    if (order === 0) {
+
+    }
+    else if (order === 1) {
+
+    }
+    else {
+      
+    }
   };
 
   return (
-    <div>
-      <button className="border-2 border-black" onClick={getData}>
+    <div className="ml-20 mt-10 mr-20">
+      <button className="ml-10 mt-10 border-2 border-black p-1 mr-10" onClick={getData}>
         Get Data
       </button>
-      <Table incomeStatements={filteredStatements} />
+            <PopupState variant="popover" popupId="demo-popup-menu">
+        {(popupState) => (
+          <React.Fragment>
+            <Button variant="" {...bindTrigger(popupState)}>
+              Sort
+            </Button>
+            <Menu {...bindMenu(popupState)}>
+              <MenuItem onClick={popupState.close}>Ascending</MenuItem>
+              <MenuItem onClick={popupState.close}>Descending</MenuItem>
+            </Menu>
+          </React.Fragment>
+        )}
+      </PopupState>
+      <Table className="ml-20 mt-10 border-2 border-black p-1 mr-20" incomeStatements={filteredStatements} />
       
     </div>
   );

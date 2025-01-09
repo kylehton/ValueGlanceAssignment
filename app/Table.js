@@ -1,26 +1,26 @@
 export function Table({ incomeStatements }) {
 
 return (
-    <table>
+    <table className="border-1 border-black">
         <thead>
           <tr className="w-full border-collapse">
-            <th className="text-left px-5 py-2">Date</th>
-            <th>Revenue</th>
-            <th>Net Income</th>
-            <th>Gross Profit</th>
-            <th>EPS</th>
-            <th>Operating Income</th>
+            <th className="text-center px-10 py-5">Date</th>
+            <th className="text-center px-10 py-5">Revenue</th>
+            <th className="text-center px-10 py-5">Net Income</th>
+            <th className="text-center px-10 py-5">Gross Profit</th>
+            <th className="text-center px-10 py-5">EPS</th>
+            <th className="text-center px-10 py-5">Operating Income</th>
           </tr>
         </thead>
         <tbody>
         {incomeStatements.map((incomeStatement, index) => (
           <tr key={index}>
-            <td>{incomeStatement[0]}</td>
-            <td>{incomeStatement[1]}</td>
-            <td>{incomeStatement[2]}</td>
-            <td>{incomeStatement[3]}</td>
-            <td>{incomeStatement[4]}</td>
-            <td>{incomeStatement[5]}</td>
+            <td className="text-center">{incomeStatement[0]}</td>
+            <td className="text-center">{incomeStatement[1]}</td>
+            <td className="text-center">{incomeStatement[2]}</td>
+            <td className="text-center">{incomeStatement[3]}</td>
+            <td className="text-center">{incomeStatement[4]}</td>
+            <td className="text-center">{incomeStatement[5]}</td>
           </tr>
         ))}
         </tbody>
