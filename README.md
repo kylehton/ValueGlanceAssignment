@@ -37,7 +37,7 @@ Filtering:
 Sorting:
     7 different outcomes are formulated: regarding date, revenue, and net income, all of which can be sorted in ascending or descending order, as well as the initial display of entries, which is the order in which it was gathered
 
-For order: 0 -> ascending, and 1 -> descending (0 == true, 1 == false)
-For sorting: 0 -> Date, 1 -> Revenue, 2 -> Net Income (corresponding to index)
+For sorting order: true -> ascending, and false -> descending 
+For filtering: 0 -> Date, 1 -> Revenue, 2 -> Net Income (corresponding to index)
 
 ## Deployed Link Below
