@@ -13,9 +13,9 @@ export default function Home() {
   const [sortOrder, setSortOrder] = useState(true); // true -> ascending, false -> descending
   const [lowBound, setLowBound] = useState(0);
   const [highBound, setHighBound] = useState(0);
-  const [sortType, setSortType] = useState(0); // 0 -> date, 1 -> revenue, 2 -> netIncome
+  const [filterType, setFilterType] = useState(-1);
 
-  const getData = async () => {
+  const get_data = async () => {
     try {
       const res = await fetch(url);
       const data = await res.json();
@@ -31,7 +31,6 @@ export default function Home() {
         incomeStatement.operatingIncome,
       ]);
       
-
       setIncomeStatements(newStatements); // Update the state with the new array
       setFilteredStatements(newStatements); // Update the state with the new array
       console.log('Simplified Data:', newStatements);
@@ -40,19 +39,40 @@ export default function Home() {
     }
   };
 
-  // type -> revenue, netIncome, grossProfit, eps, operatingIncome
+  // type -> filterType
   // lowBound -> minimum value in range
   // highBound -> maximum value in range
-  const filterData = (data, type, lowBound, highBound) => {
-    newStatement = data.filter(
-      (incomeStatement) => incomeStatement[type] >= lowBound && incomeStatement[type] <= highBound
+  const filter_data = () => {
+    
+    let newStatement = [...filteredStatements];
+
+    if (filterType === 0) {
+        setLowBound(new Date(lowBound));
+        setHighBound(new Date(highBound));
+
+        newStatement = filteredStatements.filter(
+          (incomeStatement) => incomeStatement[filterType].getFullYear() >= lowBound 
+          && incomeStatement[filterType].getFullYear() <= highBound
+        );
+    }
+    else {
+    console.log('Filter Type:', filterType);
+    console.log('Low Bound:', lowBound);
+    console.log('High Bound:', highBound);
+
+    newStatement = filteredStatements.filter(
+      (incomeStatement) => incomeStatement[filterType] >= lowBound && incomeStatement[filterType] <= highBound
     );
-    setFilteredStatements(newStatement);
+  }
+    setFilteredStatements([...newStatement]);
+    setFilterType(-1); // Reset filter type
+    setLowBound(0); // Reset low bound
+    setHighBound(0); // Reset high bound
   };
 
   // type -> date (0), revenue (1), netIncome (2)
   // order -> ascending (true), descending (false)
-  const sortData = (data, type, order) => {
+  const sort_data = (data, type, order) => {
     let newStatement = [...data];
     if (order === true) {
       console.log('Ascending');
@@ -69,8 +89,7 @@ export default function Home() {
     setFilteredStatements([...newStatement]);  
   };
   
-
-  const resetData = () => {
+  const reset_data = () => {
     setFilteredStatements([...incomeStatements]);  
   };
 
@@ -80,7 +99,7 @@ export default function Home() {
         <Table className="overflow-x-auto border-2 border-black w-full" incomeStatements={filteredStatements} />
       </div>
       <div className="mt-4 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center">
-        <Button variant="outlined" color="black" className="m-1 h-8" onClick={getData}>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
         </Button>
         <PopupState variant="popover" popupId="demo-popup-menu">
@@ -91,22 +110,22 @@ export default function Home() {
               </Button>
               <Menu {...bindMenu(popupState)}>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 0, true)
+                  sort_data(filteredStatements, 0, true)
                   }}>Date (Ascending)</MenuItem>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 0, false)
+                  sort_data(filteredStatements, 0, false)
                   }}>Date (Descending)</MenuItem>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 1, true)
+                  sort_data(filteredStatements, 1, true)
                   }}>Revenue (Ascending)</MenuItem>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 1, false)
+                  sort_data(filteredStatements, 1, false)
                   }}>Revenue (Descending)</MenuItem>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 2, true)
+                  sort_data(filteredStatements, 2, true)
                   }}>Net Income (Ascending)</MenuItem>
                 <MenuItem onClick={()=> {
-                  sortData(filteredStatements, 2, false)
+                  sort_data(filteredStatements, 2, false)
                   }}>Net Income (Descending)</MenuItem>
               </Menu>
             </React.Fragment>
@@ -119,9 +138,15 @@ export default function Home() {
                 Filter
               </Button>
               <Menu {...bindMenu(popupState)}>
-                <MenuItem onClick={popupState.close}>Date</MenuItem>
-                <MenuItem onClick={popupState.close}>Revenue</MenuItem>
-                <MenuItem onClick={popupState.close}>Descending</MenuItem>
+                <MenuItem onClick={()=> {
+                  setFilterType(0)
+                  }}>Date</MenuItem>
+                <MenuItem onClick={()=> {
+                  setFilterType(1)
+                  }}>Revenue</MenuItem>
+                <MenuItem onClick={()=> {
+                  setFilterType(2)
+                  }}>Descending</MenuItem>
               </Menu>
             </React.Fragment>
           )}
@@ -146,10 +171,10 @@ export default function Home() {
             setHighBound(e.target.value)
           }}
         />
-        <Button variant="outlined" color="black" className="m-1 h-8">
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={filter_data}>
           Apply
         </Button>
-        <Button variant="outlined" color="black" className="m-1 h-8" onClick={resetData}>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={reset_data}>
           Reset Sort/Filter
         </Button>
       </div>
