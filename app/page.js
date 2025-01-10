@@ -11,15 +11,16 @@ export default function Home() {
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [filteredStatements, setFilteredStatements] = useState([]);
   const [sortOrder, setSortOrder] = useState(true); // true -> ascending, false -> descending
-  const [lowBound, setLowBound] = useState(0);
-  const [highBound, setHighBound] = useState(0);
+  const [lowBound, setLowBound] = useState(-1);
+  const [highBound, setHighBound] = useState(-1);
   const [filterType, setFilterType] = useState(-1);
+  const [fromTextField, setFromTextField] = useState("");
+  const [toTextField, setToTextField] = useState("");
 
   const get_data = async () => {
     try {
       const res = await fetch(url);
       const data = await res.json();
-      console.log('Raw Data:', data);
 
       // Create a new array with simplified data
       const newStatements = data.map((incomeStatement) => [
@@ -33,7 +34,6 @@ export default function Home() {
       
       setIncomeStatements(newStatements); // Update the state with the new array
       setFilteredStatements(newStatements); // Update the state with the new array
-      console.log('Simplified Data:', newStatements);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -44,30 +44,26 @@ export default function Home() {
   // highBound -> maximum value in range
   const filter_data = () => {
     
-    let newStatement = [...filteredStatements];
+    let newStatement = [...incomeStatements];
 
     if (filterType === 0) {
         setLowBound(new Date(lowBound));
         setHighBound(new Date(highBound));
 
-        newStatement = filteredStatements.filter(
+        newStatement = incomeStatements.filter(
           (incomeStatement) => incomeStatement[filterType].getFullYear() >= lowBound 
           && incomeStatement[filterType].getFullYear() <= highBound
         );
     }
     else {
-    console.log('Filter Type:', filterType);
-    console.log('Low Bound:', lowBound);
-    console.log('High Bound:', highBound);
-
-    newStatement = filteredStatements.filter(
+    newStatement = incomeStatements.filter(
       (incomeStatement) => incomeStatement[filterType] >= lowBound && incomeStatement[filterType] <= highBound
     );
   }
     setFilteredStatements([...newStatement]);
     setFilterType(-1); // Reset filter type
-    setLowBound(0); // Reset low bound
-    setHighBound(0); // Reset high bound
+    setLowBound(-1); // Reset low bound
+    setHighBound(-1); // Reset high bound
   };
 
   // type -> date (0), revenue (1), netIncome (2)
@@ -75,11 +71,9 @@ export default function Home() {
   const sort_data = (data, type, order) => {
     let newStatement = [...data];
     if (order === true) {
-      console.log('Ascending');
       newStatement.sort((a, b) => a[type] - b[type]); 
       console.log(newStatement);
     } else if (order === false) {
-      console.log('Descending');
       newStatement.sort((a, b) => b[type] - a[type]); 
       console.log(newStatement);
     } else {
@@ -88,10 +82,19 @@ export default function Home() {
   
     setFilteredStatements([...newStatement]);  
   };
+
+  const apply_filter = () => {
+    setLowBound
+  }
   
   const reset_data = () => {
     setFilteredStatements([...incomeStatements]);  
   };
+
+  const clear_data = () => {
+    setIncomeStatements([]);
+    setFilteredStatements([]);
+  }
 
   return (
     <div className="ml-10 mt-5 mr-10 w-9/10 content-center">
@@ -146,36 +149,55 @@ export default function Home() {
                   }}>Revenue</MenuItem>
                 <MenuItem onClick={()=> {
                   setFilterType(2)
-                  }}>Descending</MenuItem>
+                  }}>Net Income</MenuItem>
               </Menu>
             </React.Fragment>
           )}
         </PopupState>
         <TextField
-          placeholder="From"
+          type="number"
+          placeholder="From" // Placeholder text displayed when value is empty
           className="h-8 w-20 sm:w-32 m-1"
+          value={lowBound === -1 ? "" : lowBound} // Show placeholder when lowBound is 0
           InputProps={{
             style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
           }}
           onChange={(e) => {
-            setLowBound(e.target.value)
+            const value = parseInt(e.target.value, 10); // Convert input to integer
+            setLowBound(isNaN(value) ? 0 : value); // Default to 0 for invalid input
           }}
         />
         <TextField
-          placeholder="To"
+          type="number"
+          placeholder="To" // Placeholder text displayed when value is empty
           className="h-8 w-20 sm:w-32 m-1"
+          value={highBound === -1 ? "" : highBound} // Show placeholder when highBound is 0
           InputProps={{
             style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
           }}
           onChange={(e) => {
-            setHighBound(e.target.value)
+            const value = parseInt(e.target.value, 10); // Convert input to integer
+            setHighBound(isNaN(value) ? 0 : value); // Default to 0 for invalid input
           }}
         />
-        <Button variant="outlined" color="black" className="m-1 h-8" onClick={filter_data}>
+        <Button
+          variant="outlined"
+          color="black"
+          className="m-1 h-8"
+          onClick={() => {
+            filter_data(); // Apply the filter logic
+            setLowBound(-1); // Clear "From" input field
+            setHighBound(-1); // Clear "To" input field
+          }}
+        >
           Apply
         </Button>
+
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={reset_data}>
           Reset Sort/Filter
+        </Button>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={clear_data}>
+          Clear Data
         </Button>
       </div>
     </div>
