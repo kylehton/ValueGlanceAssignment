@@ -111,7 +111,7 @@ export default function Home() {
     <Typography
       className="ml-5 mt-10"
       sx={{
-        marginLeft: 5,
+        marginLeft: 2,
         fontWeight: 'bold',   
         fontSize: '2.25rem', 
         fontFamily: '"San Francisco", Helvetica, Arial, sans-serif', 
@@ -127,35 +127,24 @@ export default function Home() {
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
         </Button>
-        <PopupState variant="popover" popupId="demo-popup-menu">
-          {(popupState) => (
-            <React.Fragment>
-              <Button variant="outlined" color="black" className="m-1 h-8" {...bindTrigger(popupState)}>
-                Sort
-              </Button>
-              <Menu {...bindMenu(popupState)}>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 0, true)
-                  }}>Date (Ascending)</MenuItem>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 0, false)
-                  }}>Date (Descending)</MenuItem>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 1, true)
-                  }}>Revenue (Ascending)</MenuItem>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 1, false)
-                  }}>Revenue (Descending)</MenuItem>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 2, true)
-                  }}>Net Income (Ascending)</MenuItem>
-                <MenuItem onClick={()=> {
-                  sort_data(filteredStatements, 2, false)
-                  }}>Net Income (Descending)</MenuItem>
-              </Menu>
-            </React.Fragment>
-          )}
-        </PopupState>
+        <select
+            sx={{
+              
+            }}
+            className="m-1 h-8 border border-gray-300 rounded-md px-2 text-sm"
+            onChange={(e) => {
+              const [type, order] = e.target.value.split(','); // Extract type and order
+              sort_data(filteredStatements, Number(type), order === 'true'); // Call sort_data with parsed values
+            }}
+          >
+            <option value="">Sort By</option>
+            <option value="0,true">Date (Ascending)</option>
+            <option value="0,false">Date (Descending)</option>
+            <option value="1,true">Revenue (Ascending)</option>
+            <option value="1,false">Revenue (Descending)</option>
+            <option value="2,true">Net Income (Ascending)</option>
+            <option value="2,false">Net Income (Descending)</option>
+          </select>
         <PopupState variant="popover" popupId="demo-popup-menu">
           {(popupState) => (
             <React.Fragment>
