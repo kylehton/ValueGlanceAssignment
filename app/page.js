@@ -111,6 +111,7 @@ export default function Home() {
     <Typography
       className="ml-5 mt-10"
       sx={{
+        marginLeft: 5,
         fontWeight: 'bold',   
         fontSize: '2.25rem', 
         fontFamily: '"San Francisco", Helvetica, Arial, sans-serif', 
