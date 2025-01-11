@@ -1,8 +1,17 @@
 'use client';
+import './globals.css';
 import React, { useState } from 'react';
 import { Table } from './Table.js';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { Menu, MenuItem, Button, TextField } from '@mui/material';
+import { Typography, Menu, MenuItem, Button, TextField } from '@mui/material';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: '"San Francisco", Helvetica, Arial, sans-serif',
+  },
+});
 
 const api_key = process.env.NEXT_PUBLIC_API_KEY;
 const url = `https://financialmodelingprep.com/api/v3/income-statement/AAPL?period=annual&apikey=${api_key}`;
@@ -97,11 +106,15 @@ export default function Home() {
   }
 
   return (
-    <div className="ml-10 mt-5 mr-10 w-9/10 content-center">
-      <div className="mt-2">
-        <Table className="overflow-x-auto border-2 border-black w-full" incomeStatements={filteredStatements} />
-      </div>
-      <div className="mt-4 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center">
+    <ThemeProvider theme={theme}>
+    <div className="ml-10 m-5 mr-10 w-9/10" >
+      <Typography className="font-semibold text-4xl ml-5 mt-10 text-zinc-800">
+        Income Statement Data
+      </Typography>
+      <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-2">Data provided by FinancialModelingPrep Income Statements API</p>
+      <div className="mt-10 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center
+      ml-4 text-zinc-700
+      ">
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
         </Button>
@@ -200,6 +213,10 @@ export default function Home() {
           Clear Data
         </Button>
       </div>
+      <div className="">
+        <Table className="overflow-x-auto w-full" incomeStatements={filteredStatements} />
+      </div>
     </div>
+    </ThemeProvider>
   );
 }

@@ -7,6 +7,16 @@
   --background: #171717;
 }
 
+
+@media (max-width: 768px) {
+  table {
+    font-size: 12px; /* Decrease font size on smaller screens */
+  }
+  th, td {
+    padding: 8px 5px; /* Reduce padding for mobile screens */
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground: #0a0a0a;
@@ -17,5 +27,6 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "San Francisco", Helvetica, Arial, sans-serif;
 }
+
