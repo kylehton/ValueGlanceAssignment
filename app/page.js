@@ -2,8 +2,7 @@
 import './globals.css';
 import React, { useState } from 'react';
 import { Table } from './Table.js';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { Typography, Menu, MenuItem, Button, TextField } from '@mui/material';
+import { Typography, Button, TextField } from '@mui/material';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -45,66 +44,65 @@ export default function Home() {
       console.log(newStatements);
       
       setIncomeStatements(newStatements); 
-      setFilteredStatements(newStatements); 
-      reset_sort();
-      reset_filters();
+      setFilteredStatements(newStatements);
       
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  // type -> filterType
-  // lowBound -> minimum value in range
-  // upperBound -> maximum value in range
-  const filter_data = () => {
-    
-    let newStatement = [...incomeStatements];
-
-    if (filterType === 0) {
-        setLowBound(new Date(lowBound));
-        setUpperBound(new Date(upperBound));
-
-        newStatement = incomeStatements.filter(
-          (incomeStatement) => {
-            const date = new Date(incomeStatement[filterType]);
-            return (
-              date.getFullYear() >= lowBound &&
-              date.getFullYear() <= upperBound
-            );
-          }
-        );
-    }
-    else {
-    newStatement = incomeStatements.filter(
-      (incomeStatement) => incomeStatement[filterType] >= lowBound && incomeStatement[filterType] <= upperBound
-    );
-    console.log("Type:", sortType, "Order:", sortOrder);
-    sort_data();
-  }
-    setFilteredStatements([...newStatement]);
-    setFilterType(-1);
-    setLowBound(-1); 
-    setUpperBound(-1); 
-    setSelectedFilter("");
-  };
-
-  // type -> date (0), revenue (1), netIncome (2)
-  // order -> ascending (true), descending (false)
-  const sort_data = () => {
-    let newStatement = [...filteredStatements];
-
-    if (sortOrder === true) {
-      newStatement.sort((a, b) => a[sortType] - b[sortType]); 
-      console.log(newStatement);
-    } else if (sortOrder === false) {
-      newStatement.sort((a, b) => b[sortType] - a[sortType]); 
-      console.log(newStatement);
+  // type -> index of type to sort
+  // order -> true for ascending, false for descending
+  const sort_data = (type, order, data = filteredStatements) => {
+    let newStatement = [...data];
+    if (order === true) {
+      newStatement.sort((a, b) => a[type] - b[type]); 
+    } else if (order === false) {
+      newStatement.sort((a, b) => b[type] - a[type]); 
     } else {
       throw new Error('Invalid order value');
     }
-    console.log("Type:", sortType, "Order:", sortOrder);
-    setFilteredStatements([...newStatement]);  
+    setFilteredStatements([...newStatement]);
+  };
+  
+  // filterType -> index of type to filter
+  // lowBound -> minimum value in range
+  // upperBound -> maximum value in range
+  const filter_data = () => {
+    let newStatement = [...incomeStatements];
+  
+    if (filterType === 0) {
+      setLowBound(new Date(lowBound));
+      setUpperBound(new Date(upperBound));
+  
+      newStatement = incomeStatements.filter(
+        (incomeStatement) => {
+          const date = new Date(incomeStatement[filterType]);
+          return (
+            date.getFullYear() >= lowBound &&
+            date.getFullYear() <= upperBound
+          );
+        }
+      );
+    } else {
+      newStatement = incomeStatements.filter(
+        (incomeStatement) => 
+          incomeStatement[filterType] >= lowBound && 
+          incomeStatement[filterType] <= upperBound
+      );
+    }
+  
+    // apply active sort to the filtered data
+    if (sortType !== -1) {
+      sort_data(sortType, sortOrder, newStatement);
+    } else {
+      setFilteredStatements([...newStatement]);
+    }
+  
+    setFilterType(-1);
+    setLowBound(-1);
+    setUpperBound(-1);
+    setSelectedFilter("");
   };
 
   const reset_filters = () => {
@@ -127,6 +125,8 @@ export default function Home() {
   };
 
   const clear_data = () => {
+    reset_filters();
+    reset_sort();
     setIncomeStatements([]);
     setFilteredStatements([]);
   }
@@ -158,14 +158,14 @@ export default function Home() {
           className="m-1 h-8 border border-zinc-700 rounded-md px-2 text-sm"
           onChange={(e) => {
             const [type, order] = e.target.value.split(',');
-          
+        
+            // Update states for UI tracking
             setSelectedSort(e.target.value);
             setSortType(Number(type));
             setSortOrder(order === 'true');
-
-            // Ensure the state updates are applied before sorting
-            const sortedData = [...filteredStatements]; // Clone to avoid direct state mutation
-            sort_data();
+        
+            // Immediately sort data with the new type and order
+            sort_data(Number(type), order === 'true');
           }}
         >
           <option value="">Sort By</option>
