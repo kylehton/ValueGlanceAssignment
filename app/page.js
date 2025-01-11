@@ -108,9 +108,17 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
     <div className="ml-10 m-5 mr-10 w-9/10" >
-      <Typography className="font-semibold text-4xl ml-5 mt-10 text-zinc-800">
+    <Typography
+      className="ml-5 mt-10"
+      sx={{
+        fontWeight: 'bold',   
+        fontSize: '2.25rem', 
+        fontFamily: '"San Francisco", Helvetica, Arial, sans-serif', 
+        color: '#1f2937',
+      }}>
         Income Statement Data
-      </Typography>
+    </Typography>
+
       <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-2">Data provided by FinancialModelingPrep Income Statements API</p>
       <div className="mt-10 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center
       ml-4 text-zinc-700
