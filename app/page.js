@@ -146,16 +146,16 @@ export default function Home() {
         Income Statement Data
     </Typography>
 
-      <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-2">Data provided by FinancialModelingPrep Income Statements API</p>
-      <div className="mt-10 flex flex-wrap items-center gap-2 sm:gap-4 sm:justify-start justify-center
+      <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-1">Data provided by FinancialModelingPrep Income Statements API</p>
+      <div className="mt-10 flex flex-wrap items-center gap-y-2 gap-x-1 sm:gap-x-2 sm:justify-start justify-center
       ml-5 mr-5 text-zinc-700 w-9/10
       ">
-        <Button variant="outlined" color="black" className="m-2 h-8" onClick={get_data}>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
         </Button>
         <select
           value={selectedSort}
-          className="m-2 h-8 border border-zinc-700 rounded-md px-2 text-sm"
+          className="m-1 h-8 border border-zinc-700 rounded-md px-2 text-sm"
           onChange={(e) => {
             const [type, order] = e.target.value.split(',');
         
@@ -178,7 +178,7 @@ export default function Home() {
         </select>
           <select
             value={selectedFilter}
-            className="m-2 h-8 border border-zinc-700 rounded-md px-2 text-sm"
+            className="m-1 h-8 border border-zinc-700 rounded-md px-2 text-sm"
             onChange={(e) => {
               setFilterType(Number(e.target.value));
               setSelectedFilter(Number(e.target.value));
@@ -193,7 +193,7 @@ export default function Home() {
         <TextField
           type="number"
           placeholder="From" 
-          className="h-8 w-20 sm:w-32 m-2"
+          className="h-8 w-20 sm:w-32 m-1"
           value={lowBound === -1 ? "" : lowBound} 
           InputProps={{
             style: { height: '2rem' }, 
@@ -206,7 +206,7 @@ export default function Home() {
         <TextField
           type="number"
           placeholder="To" 
-          className="h-8 w-20 sm:w-32 m-2"
+          className="h-8 w-20 sm:w-32 m-1"
           value={upperBound === -1 ? "" : upperBound} 
           InputProps={{
             style: { height: '2rem' },
@@ -219,7 +219,7 @@ export default function Home() {
         <Button
           variant="outlined"
           color="black"
-          className="m-2 h-8"
+          className="m-1 h-8"
           onClick={() => {
             filter_data();
             setLowBound(-1);
@@ -229,10 +229,10 @@ export default function Home() {
           Apply
         </Button>
 
-        <Button variant="outlined" color="black" className="m-2 h-8" onClick={reset_data}>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={reset_data}>
           Reset Sort/Filter
         </Button>
-        <Button variant="outlined" color="black" className="m-2 h-8" onClick={clear_data}>
+        <Button variant="outlined" color="black" className="m-1 h-8" onClick={clear_data}>
           Clear Data
         </Button>
       </div>
