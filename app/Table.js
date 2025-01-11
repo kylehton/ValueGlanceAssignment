@@ -2,9 +2,9 @@ import "./globals.css";
 
 export function Table ({ incomeStatements }) {
     return (
-      <div className=" mb-10 overflow-x-auto overflow-y-auto rounded border border-white text-zinc-600"
+      <div className="m-5 mb-10 overflow-x-auto overflow-y-auto rounded border border-white text-zinc-600"
       style={{
-        maxWidth: "95%",
+        maxWidth: "95.25%",
         marginLeft: 20,
       }}
       >
