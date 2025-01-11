@@ -133,7 +133,7 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-    <div className="ml-10 m-5 mr-10 w-9/10" >
+    <div className="m-10 w-9/10" >
     <Typography
       className="ml-5 mt-10"
       sx={{
