@@ -4,7 +4,7 @@ export function Table ({ incomeStatements }) {
     return (
       <div className="mt-5 mb-10 overflow-x-auto overflow-y-auto rounded border border-zinc-300 text-zinc-600"
       style={{
-        maxWidth: "93%",
+        maxWidth: "95.425%",
         marginLeft: 20,
       }}
       >

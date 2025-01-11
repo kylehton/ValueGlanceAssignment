@@ -19,12 +19,13 @@ const url = `https://financialmodelingprep.com/api/v3/income-statement/AAPL?peri
 export default function Home() {
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [filteredStatements, setFilteredStatements] = useState([]);
-  const [sortOrder, setSortOrder] = useState(true); // true -> ascending, false -> descending
-  const [lowBound, setLowBound] = useState(-1);
-  const [highBound, setHighBound] = useState(-1);
-  const [filterType, setFilterType] = useState(-1);
-  const [fromTextField, setFromTextField] = useState("");
-  const [toTextField, setToTextField] = useState("");
+  const [sortType, setSortType] = useState(-1); // index of type to sort
+  const [sortOrder, setSortOrder] = useState(true); // true for ascending, false for descending
+  const [selectedSort, setSelectedSort] = useState(""); // placeholder for sortType
+  const [lowBound, setLowBound] = useState(-1); // lower bound for interval
+  const [upperBound, setUpperBound] = useState(-1); //upper bound for interval
+  const [filterType, setFilterType] = useState(-1); // index of type to filter
+  const [selectedFilter, setSelectedFilter] = useState(""); // placeholder for filterType
 
   const get_data = async () => {
     try {
@@ -40,9 +41,14 @@ export default function Home() {
         incomeStatement.eps,
         incomeStatement.operatingIncome,
       ]);
+
+      console.log(newStatements);
       
-      setIncomeStatements(newStatements); // Update the state with the new array
-      setFilteredStatements(newStatements); // Update the state with the new array
+      setIncomeStatements(newStatements); 
+      setFilteredStatements(newStatements); 
+      reset_sort();
+      reset_filters();
+      
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -50,54 +56,74 @@ export default function Home() {
 
   // type -> filterType
   // lowBound -> minimum value in range
-  // highBound -> maximum value in range
+  // upperBound -> maximum value in range
   const filter_data = () => {
     
     let newStatement = [...incomeStatements];
 
     if (filterType === 0) {
         setLowBound(new Date(lowBound));
-        setHighBound(new Date(highBound));
+        setUpperBound(new Date(upperBound));
 
         newStatement = incomeStatements.filter(
-          (incomeStatement) => incomeStatement[filterType].getFullYear() >= lowBound 
-          && incomeStatement[filterType].getFullYear() <= highBound
+          (incomeStatement) => {
+            const date = new Date(incomeStatement[filterType]);
+            return (
+              date.getFullYear() >= lowBound &&
+              date.getFullYear() <= upperBound
+            );
+          }
         );
     }
     else {
     newStatement = incomeStatements.filter(
-      (incomeStatement) => incomeStatement[filterType] >= lowBound && incomeStatement[filterType] <= highBound
+      (incomeStatement) => incomeStatement[filterType] >= lowBound && incomeStatement[filterType] <= upperBound
     );
+    console.log("Type:", sortType, "Order:", sortOrder);
+    sort_data();
   }
     setFilteredStatements([...newStatement]);
-    setFilterType(-1); // Reset filter type
-    setLowBound(-1); // Reset low bound
-    setHighBound(-1); // Reset high bound
+    setFilterType(-1);
+    setLowBound(-1); 
+    setUpperBound(-1); 
+    setSelectedFilter("");
   };
 
   // type -> date (0), revenue (1), netIncome (2)
   // order -> ascending (true), descending (false)
-  const sort_data = (data, type, order) => {
-    let newStatement = [...data];
-    if (order === true) {
-      newStatement.sort((a, b) => a[type] - b[type]); 
+  const sort_data = () => {
+    let newStatement = [...filteredStatements];
+
+    if (sortOrder === true) {
+      newStatement.sort((a, b) => a[sortType] - b[sortType]); 
       console.log(newStatement);
-    } else if (order === false) {
-      newStatement.sort((a, b) => b[type] - a[type]); 
+    } else if (sortOrder === false) {
+      newStatement.sort((a, b) => b[sortType] - a[sortType]); 
       console.log(newStatement);
     } else {
       throw new Error('Invalid order value');
     }
-  
+    console.log("Type:", sortType, "Order:", sortOrder);
     setFilteredStatements([...newStatement]);  
   };
 
-  const apply_filter = () => {
-    setLowBound
+  const reset_filters = () => {
+      setFilterType(-1);
+      setLowBound(-1); 
+      setUpperBound(-1); 
+      setSelectedFilter("");
+  }
+
+  const reset_sort = () => {
+    setSortType(-1);
+    setSortOrder(true); 
+    setSelectedSort("");
   }
   
   const reset_data = () => {
-    setFilteredStatements([...incomeStatements]);  
+    setFilteredStatements([...incomeStatements]); 
+    reset_filters();
+    reset_sort();
   };
 
   const clear_data = () => {
@@ -122,73 +148,72 @@ export default function Home() {
 
       <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-2">Data provided by FinancialModelingPrep Income Statements API</p>
       <div className="mt-10 flex flex-wrap items-center space-x-2 sm:space-x-4 sm:justify-start justify-center
-      ml-4 text-zinc-700
+      ml-4 text-zinc-700 w-9/10
       ">
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
         </Button>
         <select
-            sx={{
-              
-            }}
-            className="m-1 h-8 border border-gray-300 rounded-md px-2 text-sm"
+          value={selectedSort}
+          className="m-1 h-8 border border-zinc-700 rounded-md px-2 text-sm"
+          onChange={(e) => {
+            const [type, order] = e.target.value.split(',');
+          
+            setSelectedSort(e.target.value);
+            setSortType(Number(type));
+            setSortOrder(order === 'true');
+
+            // Ensure the state updates are applied before sorting
+            const sortedData = [...filteredStatements]; // Clone to avoid direct state mutation
+            sort_data();
+          }}
+        >
+          <option value="">Sort By</option>
+          <option value="0,true">Date (Ascending)</option>
+          <option value="0,false">Date (Descending)</option>
+          <option value="1,true">Revenue (Ascending)</option>
+          <option value="1,false">Revenue (Descending)</option>
+          <option value="2,true">Net Income (Ascending)</option>
+          <option value="2,false">Net Income (Descending)</option>
+        </select>
+          <select
+            value={selectedFilter}
+            className="m-1 h-8 border border-zinc-700 rounded-md px-2 text-sm"
             onChange={(e) => {
-              const [type, order] = e.target.value.split(','); // Extract type and order
-              sort_data(filteredStatements, Number(type), order === 'true'); // Call sort_data with parsed values
+              setFilterType(Number(e.target.value));
+              setSelectedFilter(Number(e.target.value));
             }}
           >
-            <option value="">Sort By</option>
-            <option value="0,true">Date (Ascending)</option>
-            <option value="0,false">Date (Descending)</option>
-            <option value="1,true">Revenue (Ascending)</option>
-            <option value="1,false">Revenue (Descending)</option>
-            <option value="2,true">Net Income (Ascending)</option>
-            <option value="2,false">Net Income (Descending)</option>
+            <option value="">Filter By</option>
+            <option value="0">Date</option>
+            <option value="1">Revenue</option>
+            <option value="2">Net Income</option>
+            
           </select>
-        <PopupState variant="popover" popupId="demo-popup-menu">
-          {(popupState) => (
-            <React.Fragment>
-              <Button variant="outlined" color="black" className="m-1 h-8" {...bindTrigger(popupState)}>
-                Filter
-              </Button>
-              <Menu {...bindMenu(popupState)}>
-                <MenuItem onClick={()=> {
-                  setFilterType(0)
-                  }}>Date</MenuItem>
-                <MenuItem onClick={()=> {
-                  setFilterType(1)
-                  }}>Revenue</MenuItem>
-                <MenuItem onClick={()=> {
-                  setFilterType(2)
-                  }}>Net Income</MenuItem>
-              </Menu>
-            </React.Fragment>
-          )}
-        </PopupState>
         <TextField
           type="number"
-          placeholder="From" // Placeholder text displayed when value is empty
+          placeholder="From" 
           className="h-8 w-20 sm:w-32 m-1"
-          value={lowBound === -1 ? "" : lowBound} // Show placeholder when lowBound is 0
+          value={lowBound === -1 ? "" : lowBound} 
           InputProps={{
-            style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
+            style: { height: '2rem' }, 
           }}
           onChange={(e) => {
-            const value = parseInt(e.target.value, 10); // Convert input to integer
-            setLowBound(isNaN(value) ? 0 : value); // Default to 0 for invalid input
+            const value = parseInt(e.target.value, 10); 
+            setLowBound(isNaN(value) ? 0 : value); 
           }}
         />
         <TextField
           type="number"
-          placeholder="To" // Placeholder text displayed when value is empty
+          placeholder="To" 
           className="h-8 w-20 sm:w-32 m-1"
-          value={highBound === -1 ? "" : highBound} // Show placeholder when highBound is 0
+          value={upperBound === -1 ? "" : upperBound} 
           InputProps={{
-            style: { height: '2rem' }, // Ensures the TextField has the same height as the buttons
+            style: { height: '2rem' },
           }}
           onChange={(e) => {
-            const value = parseInt(e.target.value, 10); // Convert input to integer
-            setHighBound(isNaN(value) ? 0 : value); // Default to 0 for invalid input
+            const value = parseInt(e.target.value, 10); 
+            setUpperBound(isNaN(value) ? 0 : value); 
           }}
         />
         <Button
@@ -196,9 +221,9 @@ export default function Home() {
           color="black"
           className="m-1 h-8"
           onClick={() => {
-            filter_data(); // Apply the filter logic
-            setLowBound(-1); // Clear "From" input field
-            setHighBound(-1); // Clear "To" input field
+            filter_data();
+            setLowBound(-1);
+            setUpperBound(-1);
           }}
         >
           Apply
