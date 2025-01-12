@@ -147,8 +147,8 @@ export default function Home() {
     </Typography>
 
       <p className="font-thin text-slate-700 text-xs ml-5 mr-5 m-1">Data provided by FinancialModelingPrep Income Statements API</p>
-      <div className="mt-10 flex flex-wrap items-center gap-y-2 gap-x-1 sm:gap-x-2 sm:justify-start justify-evenly
-      ml-5 mr-5 text-zinc-700 min-w-full
+      <div className="mt-10 flex flex-wrap items-center gap-y-2 gap-x-1 sm:gap-x-2 justify-start
+      ml-5 text-zinc-700 min-w-full
       ">
         <Button variant="outlined" color="black" className="m-1 h-8" onClick={get_data}>
           Get Data
