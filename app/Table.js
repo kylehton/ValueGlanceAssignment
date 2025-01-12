@@ -1,3 +1,8 @@
+/* This is a Table component, made to custom create a table to hold Apple's
+income statements from the FinancialModelingPrep API. It uses HTML built in
+table components and elements, hand-creating the headers and filling rows
+per data entry. */
+
 import "./globals.css";
 
 export function Table ({ incomeStatements }) {

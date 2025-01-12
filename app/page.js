@@ -1,3 +1,6 @@
+/* This is the homepage for this React app. It holds all React components,
+using some external styling from Material UI. */
+
 'use client';
 import './globals.css';
 import React, { useState } from 'react';
@@ -12,12 +15,13 @@ const theme = createTheme({
   },
 });
 
+// uses env variable to get API key for secure API key retrieval
 const api_key = process.env.NEXT_PUBLIC_API_KEY;
 const url = `https://financialmodelingprep.com/api/v3/income-statement/AAPL?period=annual&apikey=${api_key}`;
 
 export default function Home() {
-  const [incomeStatements, setIncomeStatements] = useState([]);
-  const [filteredStatements, setFilteredStatements] = useState([]);
+  const [incomeStatements, setIncomeStatements] = useState([]); // all initial income statements
+  const [filteredStatements, setFilteredStatements] = useState([]); // altered income statements
   const [sortType, setSortType] = useState(-1); // index of type to sort
   const [sortOrder, setSortOrder] = useState(true); // true for ascending, false for descending
   const [selectedSort, setSelectedSort] = useState(""); // placeholder for sortType
@@ -26,6 +30,7 @@ export default function Home() {
   const [filterType, setFilterType] = useState(-1); // index of type to filter
   const [selectedFilter, setSelectedFilter] = useState(""); // placeholder for filterType
 
+  // fetches data from API and sets incomeStatements and filteredStatements state
   const get_data = async () => {
     try {
       const res = await fetch(url);
@@ -56,34 +61,34 @@ export default function Home() {
   const sort_data = (type, order, data = filteredStatements) => {
     let newStatement = [...data];
     if (order === true) {
-      newStatement.sort((a, b) => a[type] - b[type]); 
+      newStatement.sort((a, b) => a[type] - b[type]); // checks if a is less than b
     } else if (order === false) {
-      newStatement.sort((a, b) => b[type] - a[type]); 
+      newStatement.sort((a, b) => b[type] - a[type]); //checks if b is less than a
     } else {
       throw new Error('Invalid order value');
     }
-    setFilteredStatements([...newStatement]);
+    setFilteredStatements([...newStatement]); //refreshes filteredStatements so it re-renders
   };
   
   // filterType -> index of type to filter
   // lowBound -> minimum value in range
   // upperBound -> maximum value in range
   const filter_data = () => {
-    let newStatement = [...incomeStatements];
+    let newStatement = [...incomeStatements]; // makes a copy of incomeStatements
   
     if (filterType === 0) {
-      setLowBound(new Date(lowBound));
-      setUpperBound(new Date(upperBound));
-  
       newStatement = incomeStatements.filter(
         (incomeStatement) => {
-          const date = new Date(incomeStatement[filterType]);
+          const date = incomeStatement[filterType];
           return (
+            // obtains year of Date object for comparison to interval bounds
+            // requires boolean result to be returned for Date filtering
             date.getFullYear() >= lowBound &&
             date.getFullYear() <= upperBound
           );
         }
       );
+      // else statement covers the other types of filtering
     } else {
       newStatement = incomeStatements.filter(
         (incomeStatement) => 
@@ -92,17 +97,15 @@ export default function Home() {
       );
     }
   
-    // apply active sort to the filtered data
+    // apply active sort to the filtered data to maintain order
     if (sortType !== -1) {
       sort_data(sortType, sortOrder, newStatement);
     } else {
       setFilteredStatements([...newStatement]);
     }
   
-    setFilterType(-1);
-    setLowBound(-1);
-    setUpperBound(-1);
-    setSelectedFilter("");
+    // resets all filters since already applied (and only applies once)
+    reset_filters();
   };
 
   const reset_filters = () => {
