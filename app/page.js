@@ -105,14 +105,17 @@ export default function Home() {
     }
   
     // resets all filters since already applied (and only applies once)
-    reset_filters();
+    reset_bounds();
   };
 
-  const reset_filters = () => {
+  const reset_all_filters = () => {
+      setSelectedFilter("");
       setFilterType(-1);
+  }
+
+  const reset_bounds = () => {
       setLowBound(-1); 
       setUpperBound(-1); 
-      setSelectedFilter("");
   }
 
   const reset_sort = () => {
@@ -123,7 +126,7 @@ export default function Home() {
   
   const reset_data = () => {
     setFilteredStatements([...incomeStatements]); 
-    reset_filters();
+    reset_all_filters();
     reset_sort();
   };
 
