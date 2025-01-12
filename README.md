@@ -27,7 +27,7 @@ ________________________________________________________________________________
 
 This project uses Node Package Manager for package installations, and is built on the React framework. 
 
-The package.json file contains all dependencies needed to install. TailwindCSS is used to style the HTML React components that are rendered to the webpage.
+The package.json file contains all dependencies needed to install. TailwindCSS is used to style the HTML and Material UI React components that are rendered to the webpage.
 
 _____________________________________________________________________________________________
 
@@ -36,20 +36,17 @@ ________________________________________________________________________________
 This project is one that uses the provided API endpoint to gather data. It then has various filtering and sorting methods to view specific data entries.
 
 Data Retrieval:
-    Fetch - uses a simple fetch to the API endpoint URL, passed with my API key. Awaits for full result to complete then moves on.
+    This app uses a simple fetch command to the API endpoint URL, passed with my API key. It waits for the full result to complete then moves on.
 
 Filtering:
-    Date Range - A modal is provided to gather entries that fall in a specific time period, by year.
-    Revenue & Net Income - A modal is provided to gather entries that fall in a specific range
+    The filtering function can be applied to "Date", "Revenue", and "Net Income". This is done through entering the interval into the provided entry boxes, selecting one of the three options above, and pressing 'Apply'.
     These can be reset by the "Reset Sort/Filters" button.
 
 Sorting:
-    6 different outcomes are formulated: regarding date, revenue, and net income, all of which can be sorted in ascending or descending order, which can be reset through the "Reset Sort/Filters" button.
-
-Sort/Filter State Variables: 
-    For sorting order: true -> ascending, and false -> descending
-    For filtering: 0 -> Date, 1 -> Revenue, 2 -> Net Income (corresponding to index)
+    6 different outcomes are formulated: regarding "Date", "Revenue", and "Net Income", all of which can be sorted in "Ascending" or "Descending" order, which can be reset through the "Reset Sort/Filters" button.
 
 _____________________________________________________________________________________________
+
+## Personal Statement
 
 Thank you for taking the time to view my React App and read the contents of this file. I appreciate the opportunity to apply for this position, and to be able to work on this small application. I hope to hear from you soon!
