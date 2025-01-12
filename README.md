@@ -29,6 +29,8 @@ This project uses Node Package Manager for package installations, and is built o
 
 The package.json file contains all dependencies needed to install. TailwindCSS is used to style the HTML and Material UI React components that are rendered to the webpage.
 
+The font type and color theme were inspired by Apple's minimalistic designs and color scheme, with a slate/gray and white composition.
+
 _____________________________________________________________________________________________
 
 ## Contents

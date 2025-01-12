@@ -10,6 +10,7 @@ import { Typography, Button, TextField } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
+  // following the Apple-esque theme, implemented a font similar to Apple's SF Pro
   typography: {
     fontFamily: '"San Francisco", Helvetica, Arial, sans-serif',
   },
